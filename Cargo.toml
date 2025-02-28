@@ -1,6 +1,9 @@
 [package]
 name = "fs-bench"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
+tempfile = "3.8"
+futures = { version ="0.3.31"}
+tokio = { version = "*", features = ["full"] }
