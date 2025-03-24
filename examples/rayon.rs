@@ -10,13 +10,14 @@ fn main() {
         .get(1)
         .and_then(|s| s.parse::<usize>().ok())
         .expect("Please provide the number of files as an argument");
+    let file_size = args.get(2).and_then(|s| s.parse::<usize>().ok()).expect("pass file size");
 
     // Create temporary files
     let temp_files: Vec<NamedTempFile> = (0..num_files)
         .map(|i| {
             let mut file =
                 NamedTempFile::new().unwrap_or_else(|_| panic!("Failed to create temp file {}", i));
-            let random_string = "Hello, world!".repeat(1000);
+            let random_string = "Hello, world!".repeat(file_size);
             file.write(random_string.as_bytes()).unwrap();
             file
         })
