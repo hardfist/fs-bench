@@ -1,14 +1,16 @@
 use futures::stream::FuturesUnordered;
 use futures::StreamExt;
-use std::env;
+use std::{env, usize};
 use std::io::Write;
 use tempfile::NamedTempFile;
 use tokio::runtime::Builder;
 
 fn main() {
+    let threads = std::env::var("IO_THREADS").unwrap().parse::<usize>().unwrap();
+    dbg!(threads);
     let rt = Builder::new_multi_thread()
         .thread_name("tokio-worker")
-        .max_blocking_threads(24)
+        .max_blocking_threads(threads)
         .enable_all()
         .build()
         .unwrap();
