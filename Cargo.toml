@@ -7,3 +7,4 @@ edition = "2021"
 tempfile = "3.8"
 futures = { version ="0.3.31"}
 tokio = { version = "*", features = ["full"] }
+rayon = { version = "*"}

@@ -1,9 +1,7 @@
-use futures::future::join_all;
 use futures::stream::FuturesUnordered;
-use futures::{Stream, StreamExt};
+use futures::StreamExt;
 use std::env;
 use std::io::Write;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use tempfile::NamedTempFile;
 use tokio::runtime::Builder;
 
@@ -14,7 +12,6 @@ fn main() {
         .enable_all()
         .build()
         .unwrap();
-    let guard = rt.enter();
     // Get the number of files from command line args
     let args: Vec<String> = env::args().collect();
     let num_files = args
@@ -25,7 +22,8 @@ fn main() {
     // Create temporary files
     let temp_files: Vec<NamedTempFile> = (0..num_files)
         .map(|i| {
-            let mut file = NamedTempFile::new().unwrap_or_else(|_| panic!("Failed to create temp file {}", i));
+            let mut file =
+                NamedTempFile::new().unwrap_or_else(|_| panic!("Failed to create temp file {}", i));
             let random_string = "Hello, world!".repeat(1000);
             file.write(random_string.as_bytes()).unwrap();
             file
@@ -40,10 +38,13 @@ fn main() {
     // Create a barrier for synchronization
 
     let start_time = std::time::Instant::now();
-    let futures:FuturesUnordered<_> = paths.iter().map(|path| tokio::fs::read_to_string(path)).collect();
-    let result: Vec<_> = rt.block_on(futures.collect());
+    let futures: FuturesUnordered<_> = paths
+        .iter()
+        .map(|path| tokio::fs::read_to_string(path))
+        .collect();
+    let _: Vec<_> = rt.block_on(futures.collect());
     let elapsed = start_time.elapsed();
-   // dbg!(result);
+    // dbg!(result);
     println!("Elapsed time: {:?}", elapsed);
     // Cleanup happens automatically when NamedTempFile is dropped
 }
